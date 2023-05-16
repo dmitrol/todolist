@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <transition-group  name="list" tag="div">
+    <transition-group name="list" tag="div">
       <div v-for="item in selectedList" :key="item.id">
         <todo-item
           :item="item"
@@ -58,24 +58,27 @@ export default {
     }
   },
   methods: {
-    addTask() {
+    async addTask() {
       console.log(this.inputValue)
-      this.$store.commit('tasks/appTodoItem', {
-        id: Date.now(),
-        text: this.inputValue,
-        complited: false,
-      })
-      this.inputValue = ''
+      this.$store
+        .dispatch('tasks/addItem', {
+          id: Date.now(),
+          text: this.inputValue,
+          complited: false,
+        })
+        .then(() => {
+          this.inputValue = ''
+        })
     },
-    changeStatus(item) {
+    async changeStatus(item) {
       item.complited = !item.complited
-      this.$store.commit('tasks/putTodoItem', item)
+      this.$store.dispatch('tasks/putItem', item)
     },
-    editItem(item) {
-      this.$store.commit('tasks/putTodoItem', item)
+    async editItem(item) {
+      this.$store.dispatch('tasks/putItem', item)
     },
-    deleteTask(item) {
-      this.$store.commit('tasks/removeTodoItem', item)
+    async deleteTask(item) {
+      this.$store.dispatch('tasks/removeItem', item)
     },
   },
 }
